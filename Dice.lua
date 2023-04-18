@@ -36,8 +36,8 @@ end
 
 function Dice:roll()
     if self.type == FLAT then
-        return self.value
+        return {sum = self.value, msg = string.format('Fixed value of **%d**', self.value)}
     elseif self.type == XDY then
-        return agm.rolldice(string.format('%dd%d', self.count, self.faces)).sum
+        return agm.rolldice(string.format('%dd%d', self.count, self.faces))
     end
 end
