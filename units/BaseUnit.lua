@@ -1,4 +1,4 @@
-agm.import('KeyCheck')
+agm.import('util/KeyCheck')
 
 BaseUnit = {}
 setmetatable(BaseUnit, {__index = KeyCheck})
@@ -35,9 +35,17 @@ local function pottostring(unit, pot, strbuilder)
     end
 end
 
+local function statustostring(statuses)
+    local strbuilder = {}
+    for _, status in ipairs(statuses) do
+        table.insert(strbuilder, status:tostring())
+    end
+    return table.concat(strbuilder, ', ')
+end
+
 function BaseUnit:tostring()
     local unitrepr = string.format('%s - %d/%d HP', self.display, self.hp, self.maxhp)
-    local statusrepr = '\nStatus: '
+    local statusrepr = '\nStatus: ' .. statustostring(self.statuses)
 
     local strbuilder = {}
     pottostring(self, 'ap', strbuilder)
@@ -61,5 +69,15 @@ function BaseUnit:repr()
     potrepr(self, 'ap', strbuilder)
     potrepr(self, 'gp', strbuilder)
     potrepr(self, 'cp', strbuilder)
+
+    for _, status in ipairs(self.statuses) do
+        table.insert(strbuilder, string.format(':addstatus(%s)', status:repr()))
+    end
+
     return table.concat(strbuilder)
+end
+
+function BaseUnit:addstatus(status)
+    table.insert(self.statuses, status)
+    return self
 end

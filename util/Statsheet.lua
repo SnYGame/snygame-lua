@@ -1,11 +1,12 @@
-agm.import('KeyCheck')
+agm.import('util/KeyCheck')
 
-statsheet = {name = 'Incident name', turn = 1, units = {}}
+statsheet = {name = 'Incident name', turn = 1, units = {}, move = 0}
 setmetatable(statsheet, {__index = KeyCheck})
 setmetatable(statsheet.units, {__index = KeyCheck})
 
 function statsheet:tostring()
-    return string.format('```\n%s\nTurn %d\n\n%s```', self.name, self.turn, self.units:tostring())
+    return string.format('```\n%s\nTurn %d\n\n%s```%s', self.name, self.turn, self.units:tostring(),
+            self.move == 0 and '' or self.units[self.move].display .. "'s move")
 end
 
 function statsheet.units:tostring()

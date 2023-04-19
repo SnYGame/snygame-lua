@@ -1,5 +1,5 @@
-agm.import('BaseUnit')
-agm.import('UnitCommand')
+agm.import('units/BaseUnit')
+agm.import('commands/CommandBasic')
 
 ControllableUnit = {}
 setmetatable(ControllableUnit, {__index = BaseUnit})

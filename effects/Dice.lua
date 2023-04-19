@@ -1,4 +1,4 @@
-agm.import('KeyCheck')
+agm.import('util/KeyCheck')
 
 Dice = {}
 setmetatable(Dice, {__index = KeyCheck})
@@ -36,7 +36,7 @@ end
 
 function Dice:roll()
     if self.type == FLAT then
-        return {sum = self.value, msg = string.format('Fixed value of **%d**', self.value)}
+        return {flat = true, sum = self.value, msg = string.format('Fixed value of **%d**', self.value)}
     elseif self.type == XDY then
         return agm.rolldice(string.format('%dd%d', self.count, self.faces))
     end

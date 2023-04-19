@@ -1,5 +1,5 @@
 DamageSingle = {}
-setmetatable(DamageSingle, {__index = StackEntry})
+setmetatable(DamageSingle, {__index = agm.StackEntry})
 
 function DamageSingle.new(src, target, amount)
     local entry = agm.StackEntry.new('Single Target Damage')
@@ -16,4 +16,6 @@ end
 
 function DamageSingle:execute()
     self.target.hp = self.target.hp - self.amount
+    agm.bufferoutput('**[Damage]** %s takes %d damage.', self.target.display, self.amount)
+    agm.bufferoutput('%s now has %d HP.', self.target.display, self.target.hp)
 end
