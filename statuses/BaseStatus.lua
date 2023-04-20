@@ -3,7 +3,7 @@ agm.import('util/KeyCheck')
 BaseStatus = {}
 setmetatable(BaseStatus, {__index = KeyCheck})
 
-TURN_END = -1
+TURN_END = 0
 
 function BaseStatus.new(name)
     local status = {name = name, tags = {}}
@@ -34,8 +34,11 @@ function BaseStatus:repr()
     if self:has('duration') then
         table.insert(strbuilder, string.format(':setduration(%d)', self.duration))
     end
-    if self:has('timing') then
-        table.insert(strbuilder, string.format(':settiming(%d)', self.timing))
+    if self:has('timing_before') then
+        table.insert(strbuilder, string.format(':timingbefore(%d)', self.timing_before))
+    end
+    if self:has('timing_after') then
+        table.insert(strbuilder, string.format(':timingafter(%d)', self.timing_after))
     end
     return table.concat(strbuilder)
 end
@@ -62,11 +65,17 @@ function BaseStatus:updateuse(offset)
     return self.use
 end
 
-function BaseStatus:settiming(timing)
-    self.timing = timing
+function BaseStatus:timingbefore(timing)
+    self.timing_before = timing
     return self
 end
 
-function BaseStatus:hastiming(timing)
-    return rawget(self, 'timing') == timing
+function BaseStatus:timingafter(timing)
+    self.timing_after = timing
+    return self
+end
+
+function BaseStatus:hastiming(prev_move, curr_move)
+    print(prev_move, curr_move)
+    return rawget(self, 'timing_before') == curr_move or rawget(self, 'timing_after') == prev_move
 end

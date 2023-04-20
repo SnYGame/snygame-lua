@@ -6,7 +6,7 @@ setmetatable(GuardStatus, {__index = BaseStatus})
 function GuardStatus.new(potency)
     local status = BaseStatus.new('Guard')
     status.potency = potency
-    status.tags = {'damage_modifier', 'damage_mitigator'}
+    status.tags = {damage_modifier = true, damage_mitigator = true}
     setmetatable(status, {__index = GuardStatus})
     return status
 end
