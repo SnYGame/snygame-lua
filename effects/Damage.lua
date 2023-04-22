@@ -15,6 +15,8 @@ function DamageSingle:tostring()
 end
 
 function DamageSingle:execute()
+    self.target:trigger(self, 'damage_modifier')
+    self.amount = math.max(self.amount, 0)
     self.target.hp = self.target.hp - self.amount
     agm.bufferoutput('**[Damage]** %s takes %d damage.', self.target.display, self.amount)
     agm.bufferoutput('%s now has %d HP.', self.target.display, self.target.hp)

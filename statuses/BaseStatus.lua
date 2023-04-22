@@ -79,3 +79,21 @@ function BaseStatus:hastiming(prev_move, curr_move)
     print(prev_move, curr_move)
     return rawget(self, 'timing_before') == curr_move or rawget(self, 'timing_after') == prev_move
 end
+
+function BaseStatus:trigger()
+    error(string.format('%s has no effect defined', self:shortstr()))
+end
+
+PotencyStatus = {}
+setmetatable(PotencyStatus, {__index = BaseStatus})
+
+function PotencyStatus.new(name, potency)
+    local status = BaseStatus.new(name)
+    status.potency = potency
+    setmetatable(status, {__index = PotencyStatus})
+    return status
+end
+
+function BaseStatus:shortstr()
+    return string.format('%s [%d]', self.name, self.potency)
+end

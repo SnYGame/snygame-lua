@@ -81,3 +81,24 @@ function BaseUnit:addstatus(status)
     table.insert(self.statuses, status)
     return self
 end
+
+function BaseUnit:trigger(effect, tag)
+    local size = #self.statuses
+    for i, status in ipairs(self.statuses) do
+        if status.tags[tag] and status:trigger(effect) then
+            self.statuses[i] = nil
+            agm.bufferoutput('%s consumed', status:shortstr())
+        end
+    end
+    tablecompact(self.statuses, size)
+end
+
+function BaseUnit:applyrollmod(roll)
+    if roll.flat then
+        return roll.sum
+    end
+
+    local effect = {amount = roll.sum}
+    self:trigger(effect, 'roll_modifier')
+    return effect.amount
+end
