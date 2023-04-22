@@ -48,11 +48,10 @@ end
 
 function DefendEntry:execute()
     local result = self.src.gp:roll()
-    local pos = indexof(statsheet.units, self.src)
     agm.bufferoutput("**[Defend]** %s's roll", self.src.display)
     agm.bufferoutput(result.msg)
     local amount = self.src:applyrollmod(result)
-    local entry = ApplyEffect.new(self.src, self.src, GuardEffect.new(amount):timingbefore(pos):setduration(1))
+    local entry = ApplyEffect.new(self.src, self.src, GuardEffect.new(amount):timingbefore(self.src):setduration(1))
     agm.stack:buffereffect(entry)
 end
 

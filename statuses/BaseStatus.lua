@@ -6,7 +6,7 @@ setmetatable(BaseStatus, {__index = KeyCheck})
 TURN_END = 0
 
 function BaseStatus.new(name)
-    local status = {name = name, tags = {}}
+    local status = {name = name, tags = {}, tick_start = 0}
     setmetatable(status, {__index = BaseStatus})
     return status
 end
@@ -35,10 +35,23 @@ function BaseStatus:repr()
         table.insert(strbuilder, string.format(':setduration(%d)', self.duration))
     end
     if self:has('timing_before') then
-        table.insert(strbuilder, string.format(':timingbefore(%d)', self.timing_before))
+        if type(self.timing_before) == 'number' then
+            table.insert(strbuilder, string.format(':timingbefore(%d)', self.timing_before))
+        else
+            local index = indexof(statsheet.units, self.timing_before)
+            table.insert(strbuilder, string.format(':timingbefore(%d)', index))
+        end
     end
     if self:has('timing_after') then
-        table.insert(strbuilder, string.format(':timingafter(%d)', self.timing_after))
+        if type(self.timing_after) == 'number' then
+            table.insert(strbuilder, string.format(':timingafter(%d)', self.timing_after))
+        else
+            local index = indexof(statsheet.units, self.timing_after)
+            table.insert(strbuilder, string.format(':timingafter(%d)', index))
+        end
+    end
+    if self.tick_start ~= 0 then
+        table.insert(strbuilder, string.format(':settickstart(%d)', self.tick_start))
     end
     return table.concat(strbuilder)
 end
@@ -48,9 +61,10 @@ function BaseStatus:setduration(duration)
     return self
 end
 
-function BaseStatus:updateduration(offset)
-    offset = offset or -1
-    self.duration = self.duration + offset
+function BaseStatus:tickduration(turn)
+    if (turn > self.tick_start) then
+        self.duration = self.duration - 1
+    end
     return self.duration
 end
 
@@ -59,9 +73,8 @@ function BaseStatus:setuses(uses)
     return self
 end
 
-function BaseStatus:updateuse(offset)
-    offset = offset or -1
-    self.use = self.use + offset
+function BaseStatus:tickuse()
+    self.use = self.use - 1
     return self.use
 end
 
@@ -72,6 +85,11 @@ end
 
 function BaseStatus:timingafter(timing)
     self.timing_after = timing
+    return self
+end
+
+function BaseStatus:settickstart(tick_start)
+    self.tick_start = tick_start
     return self
 end
 
